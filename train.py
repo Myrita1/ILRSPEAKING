@@ -1,47 +1,50 @@
-import argparse
-import numpy as np
+from transformers import Trainer, TrainingArguments, AutoModelForSequenceClassification, AutoTokenizer
 from datasets import load_dataset
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments
+import numpy as np
+import evaluate
 
-parser = argparse.ArgumentParser(description="Train a DistilBERT model.")
-parser.add_argument("--task", type=str, required=True, choices=["classification"], help="The task to train on.")
-args = parser.parse_args()
+# Load dataset
+dataset = load_dataset("imdb")
+tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 
-model_name = "distilbert-base-uncased"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-dataset = load_dataset("glue", "sst2")
-model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+# Tokenization function
+def tokenize_function(example):
+    return tokenizer(example["text"], padding="max_length", truncation=True)
 
-def preprocess(example):
-    return tokenizer(example["sentence"], truncation=True, padding="max_length")
+# Tokenize dataset
+tokenized_datasets = dataset.map(tokenize_function, batched=True)
 
-train_dataset = dataset["train"].select(range(200)).map(preprocess, batched=True)
-eval_dataset = dataset["validation"].select(range(100)).map(preprocess, batched=True)
+# Load model
+model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
 
+# Load accuracy metric
+accuracy = evaluate.load("accuracy")
+
+# Compute metrics function
+def compute_metrics(eval_pred):
+    logits, labels = eval_pred
+    predictions = np.argmax(logits, axis=-1)
+    return accuracy.compute(predictions=predictions, references=labels)
+
+# Define training arguments
 training_args = TrainingArguments(
-    output_dir="distilbert-finetuned-classification",
+    output_dir="./results",
     evaluation_strategy="epoch",
-    num_train_epochs=1,
+    learning_rate=2e-5,
     per_device_train_batch_size=8,
     per_device_eval_batch_size=8,
-    save_strategy="epoch",
-    logging_dir="./logs",
-    seed=42
+    num_train_epochs=1,
+    weight_decay=0.01,
 )
 
-def compute_metrics(p):
-    preds = np.argmax(p.predictions, axis=1)
-    return {"accuracy": (preds == p.label_ids).mean()}
-
+# Initialize Trainer
 trainer = Trainer(
     model=model,
     args=training_args,
-    train_dataset=train_dataset,
-    eval_dataset=eval_dataset,
-    tokenizer=tokenizer,
-    compute_metrics=compute_metrics
+    train_dataset=tokenized_datasets["train"].shuffle(seed=42).select(range(2000)),
+    eval_dataset=tokenized_datasets["test"].shuffle(seed=42).select(range(1000)),
+    compute_metrics=compute_metrics,
 )
 
+# Train model
 trainer.train()
-trainer.save_model()
-tokenizer.save_pretrained("distilbert-finetuned-classification")
