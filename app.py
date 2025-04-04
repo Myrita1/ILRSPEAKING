@@ -4,9 +4,11 @@ from pydub import AudioSegment
 from pydub.utils import which
 import whisper
 from langdetect import detect
+import tempfile
 
-# Set ffmpeg path explicitly
-AudioSegment.converter = r"C:\\Users\\kamal\\OneDrive\\Desktop\\LLM\\ffmpeg.exe"
+# Register ffmpeg and ffprobe
+AudioSegment.converter = which("ffmpeg.exe")
+AudioSegment.ffprobe = which("ffprobe.exe")
 
 # Load Whisper model
 model = whisper.load_model("base")
@@ -17,9 +19,11 @@ def transcribe_audio(file):
         duration = len(audio) / 1000
         if duration < 60:
             return None, "Audio must be at least 60 seconds long."
-        temp_path = "temp.wav"
-        audio.export(temp_path, format="wav")
-        result = model.transcribe(temp_path)
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+            audio.export(tmp.name, format="wav")
+            result = model.transcribe(tmp.name)
+
         return result["text"], None
     except Exception as e:
         return None, f"Error processing audio: {str(e)}"
@@ -53,10 +57,11 @@ def provide_feedback(ilr_level):
     }
     return feedback.get(ilr_level, "No feedback available.")
 
-# Streamlit UI
+# --- Streamlit UI ---
 st.title("ILR-Based Multilingual Language Assessment App")
 st.markdown("Upload speech to assess your ILR level with transcription and feedback.")
 
+# Upload section
 audio_file = st.file_uploader("Upload Audio File (.wav, .mp3, .m4a)", type=["wav", "mp3", "m4a"])
 
 if audio_file is not None:
