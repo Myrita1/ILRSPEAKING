@@ -8,3 +8,5 @@ tqdm
 numpy
 scipy
 nltk
+openai-whisper
+
