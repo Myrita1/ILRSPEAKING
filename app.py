@@ -6,8 +6,8 @@ from langdetect import detect
 import tempfile
 
 # Register exact ffmpeg and ffprobe paths
-AudioSegment.converter = r"C:\Users\kamal\OneDrive\Desktop\LLM\ffmpeg.exe"
-AudioSegment.ffprobe   = r"C:\Users\kamal\OneDrive\Desktop\LLM\ffprobe.exe"
+AudioSegment.converter = r"C:/Users/kamal/OneDrive/Desktop/LLM/ffmpeg.exe"
+AudioSegment.ffprobe   = r"C:/Users/kamal/OneDrive/Desktop/LLM/ffprobe.exe"
 
 # Load Whisper model
 model = whisper.load_model("base")
