@@ -1,0 +1,10 @@
+streamlit
+whisper
+pydub
+langdetect
+transformers
+torch
+tqdm
+numpy
+scipy
+nltk
