@@ -1,0 +1,69 @@
+# ILR-Based Multilingual Language Assessment App
+
+This project is a local language assessment tool that supports:
+
+- ✅ Clean transcription with Whisper
+- ✅ ILR analysis (heuristic based on word count)
+- ✅ Language detection
+- ✅ Audio file uploads (.wav, .mp3, .m4a)
+- ✅ Uses locally installed ffmpeg
+
+## Features
+- Upload audio files or speak directly (in future versions)
+- Transcribe and evaluate speech using Whisper
+- Estimate ILR level and give detailed feedback
+- Detect spoken language automatically
+
+---
+
+## File Structure
+```
+LLM/
+├── app.py                      # Main Streamlit application
+├── evaluate.py                 # Additional logic for scoring (optional)
+├── inference.py                # Model loading or evaluation helpers (optional)
+├── train.py                    # For training custom models (optional)
+├── ffmpeg.exe                  # Required for audio conversion
+├── distilbert-finetuned-classification/  # Your custom model
+│   ├── config
+│   ├── model.safetensors
+│   ├── tokenizer
+│   └── checkpoint-25/          # Model checkpoint files
+└── ilr-env/                    # Local virtual environment (DO NOT UPLOAD)
+```
+
+---
+
+## Requirements
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+```bash
+# Activate your virtual environment
+.\ilr-env\Scripts\activate
+
+# Run the app
+streamlit run app.py
+```
+
+---
+
+## Notes
+- ffmpeg must be in the same directory as `app.py` or accessible via PATH.
+- Ensure your audio files are **at least 60 seconds** for accurate ILR estimation.
+
+---
+
+## License
+MIT or your preferred open-source license.
+
+---
+
+## Author
+Kamal - AI Educator & Language Specialist
+
+---
+
+Let me know when you want the next file: `.gitignore`, `requirements.txt`, or instructions for pushing to GitHub.
