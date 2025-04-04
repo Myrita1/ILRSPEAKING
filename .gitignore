@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+ilr-env/
+venv/
+.env/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# VS Code settings
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Audio or model files (optional)
+*.wav
+*.mp3
+*.m4a
+*.pt
+*.pth
+*.safetensors
+
+# Logs
+*.log
+
+# Streamlit static cache
+.streamlit/
+
+# Hugging Face cache
+~/.cache/huggingface/
