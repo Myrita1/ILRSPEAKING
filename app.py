@@ -1,14 +1,13 @@
 import os
 import streamlit as st
 from pydub import AudioSegment
-from pydub.utils import which
 import whisper
 from langdetect import detect
 import tempfile
 
-# Register ffmpeg and ffprobe
-AudioSegment.converter = which("ffmpeg.exe")
-AudioSegment.ffprobe = which("ffprobe.exe")
+# Register exact ffmpeg and ffprobe paths
+AudioSegment.converter = r"C:\Users\kamal\OneDrive\Desktop\LLM\ffmpeg.exe"
+AudioSegment.ffprobe   = r"C:\Users\kamal\OneDrive\Desktop\LLM\ffprobe.exe"
 
 # Load Whisper model
 model = whisper.load_model("base")
