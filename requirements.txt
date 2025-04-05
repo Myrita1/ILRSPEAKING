@@ -1,8 +1,9 @@
 streamlit
-openai-whisper
+git+https://github.com/openai/whisper.git
 langdetect
 ffmpeg-python
-torch
+pydub
+torch==2.0.1
 numpy==1.23.5
 numba==0.57.1
 regex
